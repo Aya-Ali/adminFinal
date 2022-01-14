@@ -1,0 +1,332 @@
+<!-- navbar  -->
+<nav class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+
+
+    <div class="col-md-2 col-sm-3 col-3 " role="status" *ngIf="loading2">
+        <div class="spinner-border text-danger">
+            <span class="sr-only">Loading...</span>
+        </div>
+
+    </div>
+    <div
+        class="col-md-10 col-sm-9 col-9 d-flex align-items-center justify-content-md-end justify-content-between innerNav">
+        <i class="fas fa-cubes text-info mx-2" (click)="getStockValue()" data-toggle="modal"
+            data-target="#exampleModal"></i>
+        <input type="text" class="form-control bg-dark w-25 text-white" placeholder="Search...."
+            (keyup)="search($event.target.value)">
+        <div class="form-check mx-1 ">
+            <input class="form-check-input" (change)="RatioFilter($event.target)" type="checkbox" id="gridCheck1"
+                [checked]="rationCheck">
+            <label class="form-check-label text-white" for="gridCheck1">
+                Ratio filter
+            </label>
+        </div>
+        <div class="w-25"
+            *ngIf="selectedSubCategory && category !='*' && category != null && category.sub_categories.length>0">
+            <select class="form-control  bg-dark text-white" (change)="subCategoryOptions($event.target.value)">
+                <option value="*" [selected]='selectedAll'>All</option>
+                <option *ngFor="let subcategory of category.sub_categories" [value]="subcategory.id">
+                    <span *ngIf="lang =='en' || lang == null ; else variationNameAr">
+                        {{subcategory.name|slice:0:subcategory.name.indexOf("/")}}
+                    </span>
+                    <ng-template #variationNameAr>
+                        <span>
+                            {{subcategory.name|slice:subcategory.name.indexOf("/")+1}}
+                        </span>
+                    </ng-template>
+                </option>
+            </select>
+        </div>
+        <div class="mx-2 w-25">
+            <select name="category" class="form-control bg-dark text-white"
+                (change)="categoryOptions($event.target.value)">
+                <option value="*" [selected]='selectedAll'>All</option>
+                <optgroup label="Category">
+                    <option *ngFor="let category of allCategory" [value]="category|json">
+                        <span *ngIf="lang =='en' || lang == null ; else CategoryNameAr">
+                            {{category.name|slice:0:category.name.indexOf("/")}}
+                        </span>
+                        <ng-template #CategoryNameAr>
+                            <span>
+                                {{category.name|slice:category.name.indexOf("/")+1}}
+                            </span>
+                        </ng-template>
+                    </option>
+                </optgroup>
+            </select>
+        </div>
+        <div class="mx-2" *ngIf="!(roleNumber == '6' || roleNumber == '9'|| roleNumber == '15')">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="FilterLocation($event.target.value,true) "
+                [class.d-none]="!(location_id == ' ' || location_id == '*' )">
+                <option value="*" [selected]='selectedAll'>All</option>
+                <option value="R">Restaurants</option>
+                <option value="F">Food Control</option>
+                <option value="RF">R+F</option>
+                <option value="P">Banquet</option>
+                <option value="A">Activites</option>
+                <option value="S">Supermarket</option>
+                <option value="null">Other</option>
+            </select>
+        </div>
+        <div class="mx-2" *ngIf="roleNumber == '6'">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="FilterLocation($event.target.value,true) "
+                [class.d-none]="!(location_id == ' ' || location_id =='*' )">
+                <option value="R" selected='true'>Restaurants</option>
+                <option value="P">Banquet</option>
+
+            </select>
+        </div>
+        <div class="mx-2" *ngIf="roleNumber == '9'">
+            <select name="restaurant2" class="form-control bg-dark text-white"
+                (change)="FilterLocation($event.target.value,true) "
+                [class.d-none]="!(location_id == ' ' || location_id =='*' )">
+                <option value="R" selected="true">Restaurants</option>
+                <option value="F">Food Control</option>
+                <option value="P">Banquet</option>
+            </select>
+        </div>
+        <div class="" *ngIf="location_id == ' '">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectOption($event.target.value)">
+                <option value="*" selected='true'>All</option>
+                <option *ngFor="let location of Locations" [value]="location.id">{{location.name}}</option>
+
+            </select>
+        </div>
+
+        <div class="mx-2">
+
+            <!-- <input type="date" [value]="today" name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectTime($event.target.value)"> -->
+            <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="alwaysShowCalendars" [ranges]="ranges" [locale]="{applyLabel: 'apply'}"
+                (change)="selectTime(selected)" [keepCalendarOpeningWithRange]="keepCalendarOpeningWithRange"
+                [showRangeLabelOnInput]="showRangeLabelOnInput" class="form-control" placeholder="Select please...">
+
+        </div>
+
+        <div class="p-1 bg-danger mx-2 text-white rounded refresh " (click)="refreshSell($event)">
+            <i class="fas fa-sync rotateB"></i>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center text-white" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '6' || roleNumber == '9' "
+                    [routerLink]="['/kitchen']">
+                    <span>kitchen</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '6' || roleNumber == '7'|| roleNumber == '8'|| roleNumber == '9'||roleNumber == '15'"
+                    [routerLink]="['/product']">
+                    <span>Products</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8' "
+                    [routerLink]="['/finance']">
+                    <span>finance</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'|| roleNumber == '9' "
+                    [routerLink]="['/parties']">
+                    <span> Banquet
+                    </span>
+                </div>
+
+                <div *ngIf="roleNumber == '1'  || roleNumber == '15'" class=" refresh dropdown-item" [routerLink]="['/pos']">
+                    <span>pos</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'" class=" refresh dropdown-item" [routerLink]="['/gw1']"[attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'" class=" refresh dropdown-item" [routerLink]="['/gw2']"[attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'" class=" refresh dropdown-item" [routerLink]="['/gw3']"[attr.title]="_langChange.mw3">
+                    <span>gw3</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'" class=" refresh dropdown-item" [routerLink]="['/gw4']"[attr.title]="_langChange.mw4">
+                    <span>gw4</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'" class=" refresh dropdown-item" [routerLink]="['/gw5']"[attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item" (click)="logOut()">LogOut</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+<!-- end navbar -->
+
+<div class="container-fluid py-5" *ngIf="allRecipe.length>0">
+    <i class="fas fa-print float-right m-2  text-white p-2 bg-info rounded" (click)="printData('tableFb')"></i>
+    <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+        (click)="exportThisWithParameter('tableFb','sheet')"></i>
+    <table id="tableFb" class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize my-5"
+        border="1" width="90%" style="text-align:center;border-collapse: collapse;">
+        <thead class="thead">
+            <th>{{_langChange.ProductName}}</th>
+            <th>SKU</th>
+            <th>{{_langChange.SoldQuantity}}</th>
+            <th>{{_langChange.ProductCost}}</th>
+            <th>{{_langChange.TotalProductCost}}</th>
+            <th>{{_langChange.SellingCost}}</th>
+            <th>{{_langChange.TotalSellingCost}}</th>
+            <th>{{_langChange.Ratio}}</th>
+            <th>{{_langChange.TotalProfit}}</th>
+        </thead>
+        <tbody *ngIf="!loading2">
+            <tr *ngFor="let item of orderQuantity">
+                <td>
+                    <span *ngIf="(allRecipe|filterRecipe:item.id);else Exist3">
+
+                        <span *ngIf="lang =='en' || lang == null ; else recipeNameAr">
+                            {{(allRecipe|filterRecipe:item.id).product_custom_field1 }}
+                            <span
+                                *ngIf="(allRecipe|filterRecipe:item.id).product_custom_field1 == null || (allRecipe|filterRecipe:item.id).product_custom_field1 == ''">
+                                {{(allRecipe|filterRecipe:item.id).name
+                                }}
+                            </span>
+                        </span>
+                        <ng-template #recipeNameAr>
+                            <span>{{(allRecipe|filterRecipe:item.id).name }}</span>
+                        </ng-template>
+                    </span>
+                    <ng-template #Exist3>
+                        <span> Order not exists</span>
+                    </ng-template>
+                    <span class="text-danger" *ngIf="(allRecipe|variationName:item.variation_id)">
+                        <span *ngIf="lang !='ar' ; else recipeVariationAr2">
+                            {{(allRecipe|variationName:item.variation_id).name|slice:0:(allRecipe|variationName:item.variation_id).name.indexOf("/")}}
+                        </span>
+
+                        <ng-template #recipeVariationAr2>
+                            <span>
+                                {{(allRecipe|variationName:item.variation_id).name|slice:(allRecipe|variationName:item.variation_id).name.indexOf("/")+1}}
+                            </span>
+                        </ng-template>
+                        <!-- {{(allRecipe|variationName:item.variation_id).name}} -->
+                    </span>
+                </td>
+                <td>
+
+
+                    <span *ngIf="(allRecipe|variationName:item.variation_id);else hasVarition">
+
+                        {{(allRecipe|variationName:item.variation_id).sub_sku}}
+                    </span>
+                    <ng-template #hasVarition>
+                        <span> {{(allRecipe|filterRecipe:item.id).sku}}</span>
+                    </ng-template>
+
+                </td>
+                <td>
+                    {{item.qunt}}
+                </td>
+                <td #totalProduct class="totalProduct">
+                    {{(((allRecipe|filterRecipe:item.id)?.product_variations[0].variations)|filterRecipe:item.variation_id)?.dpp_inc_tax|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{(item.qunt*((((allRecipe|filterRecipe:item.id)?.product_variations[0].variations)|filterRecipe:item.variation_id)?.dpp_inc_tax))|number:'1.1-2'}}
+                </td>
+                <td>{{item.avgUnit_price/item.qunt|number:'1.2-2'}}</td>
+                <td #totalSelling class="totalselling">{{(item.avgUnit_price)|number:'1.2-2'}}
+                </td>
+                <td>{{(((((allRecipe|filterRecipe:item.id)?.product_variations[0].variations)|filterRecipe:item.variation_id)?.dpp_inc_tax)/(item.avgUnit_price/item.qunt))*100|number:'1.2-2'}}%
+                </td>
+                <td #totalProfit class="totalProfit">
+
+                    {{((item.avgUnit_price)-(item.qunt*((((allRecipe|filterRecipe:item.id)?.product_variations[0].variations)|filterRecipe:item.variation_id)?.dpp_inc_tax)))|number:'1.2-2'}}
+                </td>
+            </tr>
+            <tr class="bg-danger">
+                <td colspan="2">{{_langChange.total}}</td>
+                <td>{{(allRecipe|sumFb:orderQuantity).quantity|number:'1.2-2'}}</td>
+                <td> </td>
+                <td>{{(allRecipe|sumFb:orderQuantity).totalProductSum|number:'1.2-2'}}</td>
+                <td></td>
+                <td>{{(allRecipe|sumFb:orderQuantity).totalSellSum|number:'1.2-2'}}</td>
+                <td></td>
+                <td>{{(allRecipe|sumFb:orderQuantity).totalProfitSum|number:'1.2-2'}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+
+
+
+
+
+<!-- Modal -->
+<div class="modal fade text-white" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{_langChange.reportFb}} {{_langChange.Stock}}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <i class="fas fa-print float-right my-2  text-white p-2 bg-info rounded"
+                    (click)="printData('sellStock')"></i>
+                <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+                    (click)="exportThisWithParameter('sellStock','sheet')"></i>
+                <table id="sellStock"
+                    class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize m-0" border="1"
+                    width="90%" style="text-align:center;border-collapse: collapse;">
+                    <thead class="model">
+
+                        <th>{{_langChange.category}}</th>
+                        <th>{{_langChange.SoldQuantity}}</th>
+                        <th>{{_langChange.StockValueByCostPrice}}</th>
+                        <th>{{_langChange.StockValuebySellingPrice}}</th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of StockValue">
+
+                            <td>
+                                <span *ngIf="lang =='en' || lang == null ; else categoryAr">
+                                    {{item.name|slice:0:item.name.indexOf("/")}}
+                                </span>
+                                <ng-template #categoryAr>
+                                    <span>
+                                        {{item.name|slice:item.name.indexOf("/")+1}}
+
+                                    </span>
+                                </ng-template>
+                            </td>
+                            <td>{{item.quantities|number:'1.2-2'}}</td>
+                            <td>{{item.costPrice|number:'1.2-2'}}</td>
+                            <td>{{item.sellingPrice|number:'1.2-2'}}</td>
+
+                        </tr>
+                        <tr class="bg-danger">
+                            <td colspan="1">Total</td>
+
+                            <td>{{totalQantityCostPrice|number:'1.2-2'}}</td>
+                            <td>{{totalStockCostPrice|number:'1.2-2'}}</td>
+                            <td>{{totalStockSellingPrice|number:'1.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

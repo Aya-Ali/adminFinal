@@ -1,0 +1,263 @@
+<!-- navbar  -->
+<nav id="nav" class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+    <div class="spinner-border text-danger" role="status" *ngIf="loading2">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div class="col-md-8 col-sm-7 col-7 d-flex align-items-center justify-content-md-end justify-content-between">
+        <div class="position-relative edit mx-1">
+            <input type="text" [(ngModel)]="editValueModel" [value]='editValueModel'
+                class="form-control bg-dark rounded-pill text-white" placeholder="edit...."
+                (keyup.enter)="edit(editValueModel)">
+            <i class="far fa-edit position-absolute text-white" (click)="edit(editValueModel)"></i>
+        </div>
+        <div class="mx-2">
+            <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="alwaysShowCalendars" [ranges]="ranges" [locale]="{applyLabel: 'apply'}"
+                (change)="selectTime(selected)" [keepCalendarOpeningWithRange]="keepCalendarOpeningWithRange"
+                [showRangeLabelOnInput]="showRangeLabelOnInput" class="form-control" placeholder="Select please...">
+        </div>
+        <div class="mx-2" *ngIf="roleNumber == '1'">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectOption($event.target.value)">
+                <option value=" " selected='true'>All</option>
+                <option [value]="GeneralMainHouseLocationId">General Warehouse</option>
+                <option value="28">Main Warehouse</option>
+            </select>
+        </div>
+        <div class="mx-2 w-25">
+            <ng-select [(ngModel)]="contactvalue" name="Contact" (change)="selectContact(contactvalue)">
+                <ng-option value="*" selected='true'>All</ng-option>
+                <ng-option *ngFor="let contact of allContact" [value]="contact.id">
+                    {{contact.name}} {{contact.supplier_business_name}}
+                </ng-option>
+            </ng-select>
+
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '9' "
+                    [routerLink]="['/kitchen']">
+                    <span>kitchen</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1'" [routerLink]="['/finance']">
+                    <span>finance</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1'|| roleNumber == '9' "
+                    [routerLink]="['/parties']">
+                    <span> Banquet
+                    </span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1'|| roleNumber == '9'||roleNumber == '15'"
+                    [routerLink]="['/sells']">
+                    <span>Sells</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1'|| roleNumber == '9'||roleNumber == '15'"
+                    [routerLink]="['/product']">
+                    <span>Products</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1'||roleNumber == '15'"
+                    [routerLink]="['/gw1']" [attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1'||roleNumber == '15'"
+                    [routerLink]="['/gw2']" [attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1'||roleNumber == '15'"
+                    [routerLink]="['/gw3']" [attr.title]="_langChange.mw3">
+                    <span>gw3</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1'||roleNumber == '15'"
+                    [routerLink]="['/gw4']" [attr.title]="_langChange.mw4">
+                    <span>gw4</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1'||roleNumber == '15'"
+                    [routerLink]="['/gw5']" [attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"
+                    [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item text-white" (click)="logOut()">LogOut</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+<!-- end navbar -->
+
+<div class="container  py-5">
+    <div class="bg-dark shadow my-5 py-3 posContent rounded position-relative">
+        <div class="row mx-0">
+            <div class="col-md-6 m-auto ">
+                <ng-select [(ngModel)]="value" [items]="(allRecipe.length>0)?allRecipe:''" [searchFn]="customSearchFn"
+                    [groupBy]="groupByFn" dropdownPosition="bottom"
+                    bindValue="(lang =='en' || lang == null)?product_custom_field1:name" placeholder="Select Sku/Name"
+                    bindLabel="(lang =='en' || lang == null)?product_custom_field1:name">
+                    <ng-template ng-typetosearch-tmp ng-option-tmp let-item="item" let-search="searchTerm"
+                        let-index="index">
+                        <ng-container *ngIf="item.product_variations[0].is_dummy == 1">
+                            <div (click)="onChangeSearch(item.id)" class="ng-option ng-option-child p-3"
+                                [ngOptionHighlight]="search">
+
+                                {{item.sku}} /
+                                <span>
+                                    {{ item.product_custom_field1 }}
+                                    {{ item.name }}
+                                </span>
+
+
+                            </div>
+                        </ng-container>
+                        <ng-container *ngIf="item.product_variations[0].is_dummy == 0">
+
+                            <ng-container *ngFor="let variation of item.product_variations[0].variations">
+                                <div class="ng-option ng-option-child p-3 " (click)='selectEvent(variation)'>
+                                    {{variation.sub_sku}} /
+
+                                    <span *ngIf="lang =='en' || lang == null ; else variationNameAr">
+                                        {{variation.name|slice:0:variation.name.indexOf("/")}}
+                                    </span>
+                                    <ng-template #variationNameAr>
+                                        <span>
+                                            {{variation.name|slice:variation.name.indexOf("/")+1}}
+                                        </span>
+                                    </ng-template>
+                                </div>
+                                <br />
+                            </ng-container>
+                        </ng-container>
+                    </ng-template>
+                    <ng-template ng-optgroup-tmp let-item="item">
+                        {{item.name}}
+                    </ng-template>
+
+                    <ng-template ng-notfound-tmp let-searchTerm="searchTerm">
+                        <div class="ng-option disabled">
+                            No data found for "{{searchTerm}}"
+                        </div>
+                    </ng-template>
+                    <ng-template ng-loadingtext-tmp let-searchTerm="searchTerm">
+                        <div class="ng-option disabled">
+                            Fetching data for "{{searchTerm}}"
+                        </div>
+                    </ng-template>
+                </ng-select>
+
+            </div>
+            <div class="col-md-12 mx-auto my-4 ">
+
+                <table style="table-layout: fixed;"
+                    class="table text-center  table-striped position-sticky posContent2  table-dark shadow table-bordered rounded">
+                    <thead>
+                        <th>Product</th>
+                        <th>Quantity</th>
+                        <th>Price inc. tax</th>
+                        <th>Quantity Avaliable</th>
+                        <th>Subtotal</th>
+                        <th *ngIf="location_id != FoodBeverageMainWareHouseLocationID && roleNumber != '9' ">Note</th>
+                        <th>
+                            <i class="fas fa-times"></i>
+                        </th>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let product of ProductList;let i=index">
+                            <td>
+                                {{product[0].name}}
+                                <br>
+                                {{product[0].sku}}
+                                {{product[0].sub_sku}}
+                                <br />
+                                <select class="form-control" (change)="selectLot($event.target.value,i)"
+                                    *ngIf="product[2]?.lot">
+                                    <option disabled="disabled" selected>Lot Number</option>
+                                    <option *ngFor="let item of product[2].lot" [value]="item|json">
+                                        {{item.lot_number}}
+                                    </option>
+                                </select>
+                            </td>
+                            <td>
+                                <div class="d-flex justify-content-center">
+                                    <button class="qty-count qty-count--minus" [disabled]="product[1].Quantity <= 0"
+                                        (click)="minus(i)" data-action="minus" type="button">-</button>
+                                    <input class="form-control w-50 text-center rounded-0" type="number"
+                                        [max]="product[6].qty_available" [(ngModel)]="product[1].Quantity">
+                                    <button class="qty-count qty-count--add" (click)="plus(i)" data-action="add"
+                                        [disabled]="product[1].Quantity >= product[6].qty_available"
+                                        type="button">+</button>
+                                </div>
+
+                            </td>
+                            <td>
+                                <input class="form-control w-100 rounded-0" [(ngModel)]="product[3].LotPrice">
+
+                            </td>
+                            <td>
+                                <span>{{product[6].qty_available|number:'1.2-2'}}</span>
+
+                            </td>
+                            <td>
+                                <span *ngIf="product[1].Quantity <= product[6].qty_available;else option">
+                                    {{(product[3].LotPrice * product[1].Quantity)|number:'1.2-2'}}</span>
+                                <ng-template #option>
+                                    0
+                                </ng-template>
+
+                            </td>
+                            <td *ngIf="location_id != FoodBeverageMainWareHouseLocationID && roleNumber != '9'">
+                                <div class="w-100">
+                                    <ng-select class="w-100" [(ngModel)]="product[7].note">
+                                        <ng-option *ngFor="let cate of category" [value]="cate|json">{{cate.name}}
+                                        </ng-option>
+                                    </ng-select>
+                                </div>
+
+                            </td>
+                            <td><i (click)="deleteProduct(i)" class="fas fa-times text-danger"></i></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<footer class="row fixed-bottom shadow p-2 align-items-center justify-content-start">
+    <div class="container">
+        <button class="btn btn-danger" (click)="addSell()" *ngIf="!updatebtn">
+            Credit Sale
+        </button>
+        <button class="btn btn-danger" (click)="updateSell()" *ngIf="updatebtn">
+            Update Sale
+        </button>
+    </div>
+</footer>
+<div aria-live="polite" aria-atomic="true" *ngIf="Alert">
+    <div class="toast bg-danger" style="position: absolute; top: 20%; right: 2px;opacity: 1;">
+        <div class="toast-body text-white">
+            <i class="fas fa-exclamation-triangle "></i>
+            {{alertMessage}}
+        </div>
+    </div>
+</div>
+<div aria-live="polite" aria-atomic="true" *ngIf="success">
+    <div class="toast bg-success" style="position: absolute; top: 20%; right: 2px;opacity: 1;">
+        <div class="toast-body text-white">
+            <i class="fas fa-check-circle"></i> Success {{successMessage}}
+        </div>
+    </div>
+</div>
+<audio id="error">
+    <source src="assets/error.mp3" />
+</audio>
+<audio id="success">
+    <source src="assets/success.mp3" />
+</audio>

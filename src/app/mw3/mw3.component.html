@@ -1,0 +1,182 @@
+<!-- navbar  -->
+<nav id="nav" class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+    <div class="spinner-border text-danger" role="status" *ngIf="loading2">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div class="col-md-8 col-sm-7 col-7 d-flex align-items-center justify-content-md-end justify-content-between">
+
+        <div class="mx-2">
+
+            <!-- <input type="date" [value]="today" name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectTime($event.target.value)"> -->
+            <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="alwaysShowCalendars" [ranges]="ranges" [locale]="{applyLabel: 'apply'}"
+                (change)="selectTime(selected)" [keepCalendarOpeningWithRange]="keepCalendarOpeningWithRange"
+                [showRangeLabelOnInput]="showRangeLabelOnInput" class="form-control" placeholder="Select please...">
+
+        </div>
+        <div class="mx-2 col-md-3">
+            <ng-select placeholder="Select" (change)="changeCategory($event)" class="w-100">
+                <ng-option value="*">All
+                </ng-option>
+                <ng-option *ngFor="let cate of category2" [value]="cate|json">{{cate.name}}
+                </ng-option>
+            </ng-select>
+        </div>
+        <div class="p-1 bg-danger mx-2 text-white rounded refresh " (click)="refreshSell($event)">
+            <i class="fas fa-sync rotateB"></i>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' "
+                    [routerLink]="['/kitchen']">
+                    <span>kitchen</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'"
+                    [routerLink]="['/finance']">
+                    <span>finance</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8' "
+                    [routerLink]="['/parties']">
+                    <span>Banquet
+                    </span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/sells']">
+                    <span>Sells</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/product']">
+                    <span>Products</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '15'"
+                    [routerLink]="['/pos']">
+                    <span>pos</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw1']" [attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw2']" [attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw4']" [attr.title]="_langChange.mw4">
+                    <span>gw4</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw5']" [attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item text-white" (click)="logOut()">LogOut</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+<!-- end navbar -->
+
+<div class="container-fluid text-white py-5">
+    <i class="fas fa-print float-right m-2  text-white p-2 bg-info rounded" (click)="printData()"></i>
+    <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+        (click)="exportThisWithParameter('tableMW1','sheet')"></i>
+        <div class="clearfix"></div>
+        <h2 class="text-center my-3">{{_langChange.mw3}}</h2>
+    <table id="tableMW1" *ngIf="Filtersells.length>0&&product.length>0 "
+        class="table w-100 table-striped shadow table-dark table-bordered text-center text-capitalize my-2" border="1"
+        border="1" width="100%" style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+        <thead>
+            <th colspan="2">{{_langChange.ProductName}}</th>
+            <th colspan="2">{{_langChange.SoldQuantity}}</th>
+            <th colspan="2">{{_langChange.ProductCost}}</th>
+            <th colspan="2">{{_langChange.TotalProductCost}}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of Filtersells">
+                <td colspan="8" class="p-0">
+                    <table class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize mb-0"
+                        id="tablestock" border="1" width="100%"
+                        style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+
+                        <tr>
+                            <td colspan="8">{{item.name}}</td>
+                        </tr>
+                        <tr *ngFor="let productItem of item.products">
+                            <ng-container>
+                                <td colspan="8" class="p-0">
+                                    <table
+                                        class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize mb-0"
+                                        border="1" width="100%"
+                                        style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+                                        <td>
+
+                                            <span *ngIf="(product|filterRecipe:productItem.id);else Exist3">
+                                                <span *ngIf="lang =='en' || lang == null ; else recipeNameAr">
+                                                    {{(product|filterRecipe:productItem.id).product_custom_field1 }}
+                                                    <span
+                                                        *ngIf="(product|filterRecipe:productItem.id).product_custom_field1 == null || (product|filterRecipe:productItem.id).product_custom_field1 == ''">
+                                                        {{(product|filterRecipe:productItem.id).name
+                                                        }}
+                                                    </span>
+                                                </span>
+                                                <ng-template #recipeNameAr>
+                                                    <span>{{(product|filterRecipe:productItem.id).name }}</span>
+                                                </ng-template>
+                                            </span>
+                                            <ng-template #Exist3>
+                                                <span> Order not exists</span>
+                                            </ng-template>
+                                            <span class="text-danger"
+                                                *ngIf="(product|variationName:productItem.variation_id)">
+                                                <span *ngIf="lang !='ar' ; else recipeVariationAr2">
+                                                    {{(product|variationName:productItem.variation_id).name|slice:0:(product|variationName:productItem.variation_id).name.indexOf("/")}}
+                                                </span>
+
+                                                <ng-template #recipeVariationAr2>
+                                                    <span>
+                                                        {{(product|variationName:productItem.variation_id).name|slice:(product|variationName:productItem.variation_id).name.indexOf("/")+1}}
+                                                    </span>
+                                                </ng-template>
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {{productItem.qunt}}
+                                        </td>
+                                        <td>{{productItem.avgUnit_price/productItem.qunt|number:'1.2-2'}}</td>
+                                        <td>{{(productItem.avgUnit_price)|number:'1.2-2'}}</td>
+                                    </table>
+                                </td>
+                            </ng-container>
+                        </tr>
+                        <tr class=" bg-danger">
+                            <td colspan="6">{{_langChange.total}}</td>
+                            <td colspan="2" class="text-center">{{item.total|number:'1.2-2'}}</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="bg-danger">
+                <td colspan="6">{{_langChange.total}} {{_langChange.part}}</td>
+                <td colspan="2" class="text-center">{{Total|number:'1.2-2'}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

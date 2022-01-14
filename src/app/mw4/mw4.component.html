@@ -1,0 +1,115 @@
+<!-- navbar  -->
+<nav id="nav" class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+    <div class="spinner-border text-danger" role="status" *ngIf="loading2">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div class="col-md-8 col-sm-7 col-7 d-flex align-items-center justify-content-md-end justify-content-between">
+
+        <div class="mx-2">
+
+            <!-- <input type="date" [value]="today" name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectTime($event.target.value)"> -->
+            <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="alwaysShowCalendars" [ranges]="ranges" [locale]="{applyLabel: 'apply'}"
+                (change)="selectTime(selected)" [keepCalendarOpeningWithRange]="keepCalendarOpeningWithRange"
+                [showRangeLabelOnInput]="showRangeLabelOnInput" class="form-control" placeholder="Select please...">
+
+        </div>
+
+        <div class="p-1 bg-danger mx-2 text-white rounded refresh " (click)="refreshSell($event)">
+            <i class="fas fa-sync rotateB"></i>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' "
+                    [routerLink]="['/kitchen']">
+                    <span>kitchen</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'"
+                    [routerLink]="['/finance']">
+                    <span>finance</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8' "
+                    [routerLink]="['/parties']">
+                    <span>Banquet
+                    </span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/sells']">
+                    <span>Sells</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/product']">
+                    <span>Products</span>
+                </div>
+                <div class=" refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '15'"
+                    [routerLink]="['/pos']">
+                    <span>pos</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw1']" [attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw2']" [attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw3']" [attr.title]="_langChange.mw3">
+                    <span>gw3</span>
+                </div>
+            
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'||roleNumber == '15'"
+                    [routerLink]="['/gw5']" [attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item text-white" (click)="logOut()">LogOut</a>
+            </div>
+        </div>
+
+    </div>
+</nav>
+<!-- end navbar -->
+
+<div class="container-fluid text-white py-5">
+    <i class="fas fa-print float-right m-2  text-white p-2 bg-info rounded" (click)="printData()"></i>
+    <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+        (click)="exportThisWithParameter('tableMW1','sheet')"></i>
+        <div class="clearfix"></div>
+        <h2 class="text-center my-3">{{_langChange.mw4}}</h2>
+    <table id="tableMW1" *ngIf="Filtersells.length>0"
+        class="table w-100 table-striped shadow table-dark table-bordered text-center text-capitalize my-2" border="1"
+        border="1" width="100%" style="text-align:center;border-collapse: collapse;">
+        <thead>
+            <th>{{_langChange.part}}</th>
+            <th>{{_langChange.cost}}</th>
+        </thead>
+        <tbody>
+            <tr *ngFor="let item of Filtersells">
+                <td>{{item.name}}</td>
+                <td>{{item.cost|number:'1.2-2'}}</td>
+            </tr>
+            <tr class=" bg-danger">
+                <td>{{_langChange.total}}</td>
+                <td>{{Total|number:'1.2-2'}}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

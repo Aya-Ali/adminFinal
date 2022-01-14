@@ -1,0 +1,72 @@
+/* style rtl */
+body {
+    direction : rtl !important;
+    text-align: right;
+}
+
+.aside,
+#recipeItems,
+#recipeIframe {
+    right: 0 !important;
+    left : 100% !important;
+}
+
+.marks li {
+    margin-right: 105px;
+    margin-left : 0;
+}
+
+.semi_arc_2,
+.semi_arc_2:after,
+.semi_arc_3 {
+    left : 0 !important;
+    right: 3% !important;
+}
+
+.case_container {
+    margin-left : 0;
+    margin-right: 20px;
+}
+
+.regular-checkbox:checked:after {
+
+    transform: translateX(50%) !important;
+}
+
+.search i {
+    transform: translate(50%, -50%) !important;
+    top      : 50% !important;
+    left     : 0% !important;
+    right    : unset !important;
+}
+
+.dropdown-item {
+    color: white !important;
+}
+
+.dropdown-item:focus,
+.dropdown-item:hover {
+    color: #16181b !important;
+}
+
+/* .row
+{
+ flex-direction: row-reverse;   
+} */
+/* .float-right
+{
+    float: left !important;
+}
+.float-left 
+{
+    float: right !important;
+}
+.offset-2 {
+    margin-right: 16.666667%;
+}
+@media (min-width: 768px)
+{
+.offset-md-1 {
+    margin-right: 8.333333%;
+}
+} */

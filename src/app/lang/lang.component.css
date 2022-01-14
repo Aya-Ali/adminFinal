@@ -1,0 +1,103 @@
+.lang{
+    display: -webkit-box;
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    position: relative;
+    position: fixed;
+    top:0;
+    z-index: 1030;
+}
+.lang.ar
+{
+    left: 0;
+}
+.lang.en
+{
+    right:0;
+}
+/* Hide the input */
+input{
+    position: absolute;
+    opacity:0;
+    /* width: 50%;
+    height: 50%; */
+    z-index: 1;
+    cursor: pointer;
+}
+
+.check-trail {
+  display: -webkit-box;
+  display: flex;
+  -webkit-box-align: center;
+          align-items: center;
+  width: 6em;
+  height: 2.2em;
+  background: #2c3e50;
+  border-radius: 2.5em;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  cursor: pointer;
+  position: relative;
+  color: white;
+  font-size: 1em;
+  font-weight: bold;
+}
+
+.check-handler {
+  display: -webkit-box;
+  display: flex;
+  margin-left: 0.5em;
+  -webkit-box-pack: center;
+          justify-content: center;
+  -webkit-box-align: center;
+          align-items: center;
+  width: 2em;
+  height:2em;
+  position: relative;
+  background: #34495e;
+  border-radius: 50%;
+  -webkit-transition: all 0.5s ease;
+  transition: all 0.5s ease;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.3);
+}
+
+.check-trail.ar::after{
+    content: "Ar";
+    position: absolute;
+    right: 0.5rem;
+ 
+}
+.check-trail.en::after {
+    content: "En";
+    position: absolute;
+     right: 75%;
+}
+.check-handler:before {
+    content: "";
+    background-color: #34495e;
+    -webkit-transition: all 0.5s ease;
+    transition: all 0.5s ease;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+  }
+.check-trail.en {
+  background: #34495e;
+}
+.check-trail.en .check-handler {
+  margin-left: 50%;
+  background: #34495e;
+}
+.check-trail.en .check-handler::before {
+  content: "";
+  background: #34495e;
+  background-image: url(../../assets/en.png);
+  background-size: cover;
+}
+.check-trail.ar .check-handler::before {
+    content: "";
+    background: #34495e;
+    background-image: url(../../assets/ar.png);
+    background-size: cover;
+  }

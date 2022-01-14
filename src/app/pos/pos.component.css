@@ -1,0 +1,95 @@
+.posContent {
+    height    : 75vh;
+    overflow-y: auto;
+}
+
+.qty-input {
+    color      : #000;
+    background : #fff;
+    display    : flex;
+    align-items: center;
+    overflow   : hidden;
+}
+
+.qty-count {
+    background : #fff;
+    color      : inherit;
+    font-weight: bold;
+    font-size  : inherit;
+    border     : none;
+    display    : inline-block;
+    min-width  : 0;
+    line-height: 1;
+}
+
+.qty-count:focus {
+    outline: none;
+}
+
+.qty-count {
+    padding    : 0;
+    cursor     : pointer;
+    width      : 2.5rem;
+    font-size  : 1.25em;
+    text-indent: -100px;
+    overflow   : hidden;
+    position   : relative;
+}
+
+.qty-count:before,
+.qty-count:after {
+    content   : "";
+    height    : 2px;
+    width     : 10px;
+    position  : absolute;
+    display   : block;
+    background: #000;
+    top       : 0;
+    bottom    : 0;
+    left      : 0;
+    right     : 0;
+    margin    : auto;
+}
+
+.qty-count--minus {
+    border-right: 1px solid #e2e2e2;
+}
+
+.qty-count--minus::before,
+.qty-count--minus::after {
+    background: #f5365c;
+}
+
+.qty-count--add::before,
+.qty-count--add::after {
+    background: #2dce89;
+}
+
+.qty-count--add {
+    border-left: 1px solid #e2e2e2;
+}
+
+.qty-count--add:after {
+    transform: rotate(90deg);
+}
+
+.qty-count:disabled {
+    color       : #ccc;
+    background  : #f2f2f2;
+    cursor      : not-allowed;
+    border-color: transparent;
+}
+
+.qty-count:disabled:before,
+.qty-count:disabled:after {
+    background: #ccc;
+}
+
+.posContent2 {
+    top: 0;
+}
+.edit i{
+    transform: translate(-50%,-50%);
+    top: 50%;
+    right: 0;
+}

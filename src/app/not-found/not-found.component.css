@@ -1,0 +1,14 @@
+aside {
+    background-color: #26272c;
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    z-index: 1030;
+    height: 100vh;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+aside i {
+    color: #009946;
+}

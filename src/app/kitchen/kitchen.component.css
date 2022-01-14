@@ -1,0 +1,112 @@
+.bg-custom {
+  background: #3d3f46;
+  border    : 1px solid #28a745;
+}
+
+.bg-custom-red {
+  background: #3d3f46;
+  border    : 1px solid #dc3545;
+}
+
+.bg-custom-warning {
+  background: #3d3f46;
+  border    : 1px solid #ffc107;
+}
+
+.spikes {
+  position  : relative;
+  background: #3d3f46;
+  /* height : 50vh; */
+}
+
+.nav-btn,
+.dropdown-item:focus,
+.dropdown-item:hover {
+  background-color: #7c7f8d;
+  color           : #fff;
+}
+
+.spikes::after {
+  content        : "";
+  position       : absolute;
+  right          : 0;
+  left           : 0;
+  top            : 100%;
+  z-index        : 10;
+  display        : block;
+  height         : 10px;
+  background-size: 10px 100%;
+  background-image: linear-gradient(135deg, #3d3f46 25%, transparent 25%),
+    linear-gradient(225deg, #3d3f46 25%, transparent 25%);
+  background-position: 0 0;
+}
+
+.quentity {
+  width          : 1.8rem;
+  height         : 1.8rem;
+  display        : flex;
+  justify-content: center;
+  align-items    : center;
+  margin-bottom  : 0.5rem;
+}
+
+.custom-select-option :focus {
+  background-color: #26272c;
+  color           : #cacece;
+}
+
+aside {
+  background-color: #26272c;
+  position        : fixed;
+  left            : 0;
+  top             : 0;
+  bottom          : 0;
+  z-index         : 1030;
+  height          : 100vh;
+  overflow-y      : auto;
+  overflow-x      : hidden;
+}
+
+.aside-item i,
+.aside-item.active h6 {
+  color: #009946;
+}
+
+.aside-item.active i {
+  background-color: #009946;
+  color           : #fff;
+}
+
+.close-icon {
+  width : 80px;
+  height: 80px;
+  border: 3px solid;
+}
+
+.img-alert {
+  width: 5%;
+}
+
+.table thead {
+  position: sticky;
+  top     : 0;
+  z-index : 6666666666666;
+}
+
+.modal-title {
+  color: #26272c;
+}
+
+.aside-item {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top     : 0;
+  right   : 0;
+}
+
+#invoiceno {
+  cursor: pointer;
+}

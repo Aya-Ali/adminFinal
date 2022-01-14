@@ -1,0 +1,41 @@
+.innerNav {
+    position: relative;
+    z-index: 999999;
+}
+
+.table .table {
+    background-color: #2c3034;
+}
+.table td{
+
+    vertical-align: middle;
+}
+.modal-dialog{
+    max-width: 90%;
+}
+.table thead,.table .model{
+    position: sticky;
+    top: 58px;
+    left: 0;
+    background-color: black;
+    z-index: 88;
+}
+.table .model{
+    top:0;
+    z-index: 888;
+}
+.modal-content{
+    background-color: #343a40;
+    color: #fff;
+}
+#subCategory{
+    display: none;
+}
+.fa-eye{
+    cursor: pointer;
+}
+.search i{
+    transform: translate(-50%,-50%);
+    top: 50%;
+    right: 0;
+}

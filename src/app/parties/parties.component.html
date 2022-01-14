@@ -1,0 +1,423 @@
+<!-- navbar  -->
+<nav id="nav"class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+    <div class="spinner-border text-danger" role="status" *ngIf="loading2">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div class="col-md-8 col-sm-7 col-7 d-flex align-items-center justify-content-md-end justify-content-between">
+     
+        <div class="mx-2">
+
+            <!-- <input type="date" [value]="today" name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectTime($event.target.value)"> -->
+            <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="alwaysShowCalendars" [ranges]="ranges" [locale]="{applyLabel: 'apply'}"
+                (change)="selectTime(selected)" [keepCalendarOpeningWithRange]="keepCalendarOpeningWithRange"
+                [showRangeLabelOnInput]="showRangeLabelOnInput" class="form-control" placeholder="Select please...">
+
+        </div>
+
+        <div class="p-1 bg-danger mx-2 text-white rounded refresh "  (click)="refreshSell($event)">
+            <i class="fas fa-sync rotateB" ></i>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2'|| roleNumber == '11' " [routerLink]="['/kitchen']">
+                    <span >kitchen</span>
+                </div>
+           
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7' || roleNumber == '8' || roleNumber == '9'"  [routerLink]="['/product']">
+                    <span>Products</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7' || roleNumber == '8' || roleNumber == '9'" [routerLink]="['/sells']">
+                    <span >sells</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8' " [routerLink]="['/finance']">
+                    <span >
+                        finance
+                    </span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '9'"  [routerLink]="['/pos']">
+                    <span>pos</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw1']"[attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw2']"[attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw3']"[attr.title]="_langChange.mw3">
+                    <span>gw3</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw4']"[attr.title]="_langChange.mw4">
+                    <span>gw4</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw5']"[attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item text-white" (click)="logOut()">LogOut</a>
+            </div>
+        </div>
+   
+    </div>
+</nav>
+<!-- end navbar -->
+
+
+
+<div class="container-fluid text-white py-5">
+    <i class="fas fa-print float-right m-2  text-white p-2 bg-info rounded" (click)="printData()"></i>
+    <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+    (click)="exportThisWithParameter('tableParties','sheet')"></i>
+    <table id="tableParties" *ngIf="sells.length>0;else nodata"
+        class="table w-100 table-striped shadow table-dark table-bordered text-center text-capitalize my-2" border="1"
+        border="1" width="90%" style="text-align:center;border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th colspan="42">{{_langChange.reportFb}}</th>
+            </tr>
+
+        </thead>
+        <tbody>
+            <!-- Start Break -->
+            <tr>
+                <td colspan="42" class="tdCustom"></td>
+            </tr>
+            <!-- End Break -->
+            <tr>
+                <th colspan="42" class="trHeader">{{_langChange.weddingRevenue}}</th>
+            </tr>
+            <tr class="head1" #head1>
+                <th colspan="4">
+
+                </th>
+                <th colspan="2" class="text-danger" rowspan="2">
+                    {{_langChange.TotalContractValue}}
+                </th>
+                <th colspan="2" rowspan="2">
+                    {{_langChange.TotalSuppliers}}
+                </th>
+                <th colspan="2" rowspan="2">
+                    {{_langChange.TotalADFH}}
+                </th>
+                <th colspan="2" rowspan="2">
+                    {{_langChange.TotalADFHWthout}}
+                </th>
+                <th colspan="2" rowspan="2">
+                    {{_langChange.TotalADFHRatio}}
+                </th>
+                <th colspan="1">
+                    {{_langChange.wedding}}
+                </th>
+                <th colspan="1">
+                    {{_langChange.Diamondros}}
+                </th>
+                <th colspan="1">
+                    {{_langChange.sounds}}
+                </th>
+
+                <th colspan="1">
+                    {{_langChange.digitalVision}}
+                </th>
+                <th colspan="4">
+                    {{_langChange.otherIncome}}
+                </th>
+                <th colspan="8">
+                    {{_langChange.allotments}}
+                </th>
+                <th colspan="1">
+                    {{_langChange.service}}
+
+                </th>
+                <th colspan="3">
+                    {{_langChange.AGM}}
+                </th>
+                <th colspan="8">
+                    {{_langChange.weddingData}}
+                </th>
+            </tr>
+            <tr class="head2">
+                <td>1/17</td>
+                <td>1/11</td>
+                <td>2/173</td>
+                <td>2/174</td>
+                <td>{{_langChange.wedding}}</td>
+                <td>{{_langChange.KoshaAndCenterpiece}}</td>
+                <td>{{_langChange.LaserAndDJAndSmoking}}</td>
+                <td>{{_langChange.VideoAndPhoto}}</td>
+                <td>{{_langChange.Allowancetoopenhalls}}</td>
+                <td>{{_langChange.screen}}</td>
+                <td>{{_langChange.sound}}</td>
+                <td>{{_langChange.Rental}}</td>
+                <td>{{_langChange.tips}}</td>
+                <td>{{_langChange.partiesRatio_3}}</td>
+                <td>{{_langChange.partiesRatio_2}}</td>
+                <td>{{_langChange.maintenance}}</td>
+                <td>{{_langChange.security}}</td>
+                <td>{{_langChange.SupplementaryFund}}</td>
+                <td>{{_langChange.lights}}</td>
+                <td>{{_langChange.depreciation}}</td>
+                <td>15%</td>
+                <td>{{_langChange.Covers}}</td>
+                <td>{{_langChange.beverage}}</td>
+                <td>{{_langChange.food}}</td>
+                <td colspan="1">{{_langChange.Paymentreceipt}}</td>
+                <td colspan="1">{{_langChange.hall}}</td>
+                <td   colspan="1" > {{_langChange.people}}</td>
+                <td colspan="1">{{_langChange.weapon}}</td>
+                <td colspan="2">{{_langChange.invoice}}</td>
+                <td colspan="2">{{_langChange.date}}</td>
+            </tr>
+            <tr *ngFor="let sell of sells">
+                <td>
+                    {{(allRecipe|parties:category:sell:tables:taxs).card|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{(allRecipe|parties:category:sell:tables:taxs).TotalPayments1_11|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{(allRecipe|parties:category:sell:tables:taxs).custom_pay_1|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{(allRecipe|parties:category:sell:tables:taxs).cash|number:'1.2-2'}}
+                </td>
+
+                <td colspan="2">
+                    {{sell.final_total|number:'1.2-2'}}
+                </td>
+                <td colspan="2">
+                    {{(allRecipe|parties:category:sell:tables:taxs).totalSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="2">
+                    {{(allRecipe|parties:category:sell:tables:taxs).total|number:'1.2-2'}}
+                </td>
+                <td colspan="2">
+                    {{((allRecipe|parties:category:sell:tables:taxs).total)- ((allRecipe|parties:category:sell:tables:taxs).finalTax15)|number:'1.2-2'}}
+                </td>
+                <td colspan="2">{{(([
+                    ((allRecipe|parties:category:sell:tables:taxs).Wedding),
+                    ((allRecipe|parties:category:sell:tables:taxs).weddingDesigner),
+                    ((allRecipe|parties:category:sell:tables:taxs).laserDjSmoking),
+                    ((allRecipe|parties:category:sell:tables:taxs).videoPhotos),
+                    ((allRecipe|parties:category:sell:tables:taxs).X)
+                    ]|sum) - ((allRecipe|parties:category:sell:tables:taxs).armed_force_discount_amount)
+                    )|number:'1.2-2'}}
+                </td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).Wedding|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).weddingDesigner|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).laserDjSmoking|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).videoPhotos|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).HallOpeningFees|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).totalScreens|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).totalSound|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).rental|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).Tips|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).partiesRatio_3|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).partiesRatio_2|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).total_maintenance|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).Security|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).SupplementaryFund|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).totalLights|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).depreciation|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).finalTax15|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).covers|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).beverage|number:'1.2-2'}}</td>
+                <td>{{(allRecipe|parties:category:sell:tables:taxs).food|number:'1.2-2'}}</td>
+                <td colspan="1">
+                    <table
+                        class="table text-white table-striped shadow table-dark table-bordered text-center text-capitalize"
+                        *ngIf="sell.payment_lines.length>0">
+                        <thead>
+                            <th>R</th>
+                            <th>A</th>
+                            <th>M</th>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let payment_line of sell.payment_lines">
+                                <td>{{payment_line.payment_ref_no}}</td>
+                                <td>{{payment_line.amount|number:'1.2-2'}}</td>
+                                <td>{{payment_line.method}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </td>
+                <td colspan="1">
+                    <span
+                        *ngIf="sell.res_table_id != null && (tables|filterRecipe:sell.res_table_id) != undefined ;else tableName">
+                        {{(tables|filterRecipe:sell.res_table_id).name}}
+                    </span>
+                </td>
+                <td colspan="1">{{sell.custom_field_1}}</td>
+                <td colspan="1">{{sell.role}}</td>
+                <td colspan="2">{{sell.invoice_no|replace}}</td>
+                <td colspan="2">{{sell.transaction_date|date:'dd/MM/yyyy'}}</td>
+            </tr>
+
+            <tr class="bg-danger" *ngIf="totalFoodSum[0]">
+                <td>
+                    {{totalFoodSum[0].card|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{totalFoodSum[0].TotalPayments1_11|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{totalFoodSum[0].custom_pay_1|number:'1.2-2'}}
+                </td>
+                <td>
+                    {{totalFoodSum[0].cash|number:'1.2-2'}}
+                </td>
+
+                <td colspan="2">
+                    {{totalFoodSum[0].final_total|number:'1.2-2'}}
+                </td>
+                <td colspan="2">
+                    {{totalFoodSum[0].totalSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="2">
+                    {{totalFoodSum[0].total|number:'1.2-2'}}
+                </td>
+                <td colspan="2">
+                    {{(totalFoodSum[0].total)- (totalFoodSum[0].finalTax15)|number:'1.2-2'}}
+                </td>
+                <td colspan="2">{{(([
+                    (totalFoodSum[0].Wedding),
+                    (totalFoodSum[0].weddingDesigner),
+                    (totalFoodSum[0].laserDjSmoking),
+                    (totalFoodSum[0].videoPhotos),
+                    (totalFoodSum[0].X)
+                    ]|sum) - (totalFoodSum[0].armed_force_discount_amount)
+                    )|number:'1.2-2'}}
+                </td>
+                <td>{{totalFoodSum[0].Wedding|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].weddingDesigner|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].laserDjSmoking|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].videoPhotos|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].HallOpeningFees|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].totalScreens|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].totalSound|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].rental|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].Tips|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].partiesRatio_3|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].partiesRatio_2|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].total_maintenance|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].Security|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].SupplementaryFund|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].totalLights|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].depreciation|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].finalTax15|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].covers|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].beverage|number:'1.2-2'}}</td>
+                <td>{{totalFoodSum[0].food|number:'1.2-2'}}</td>
+              
+                <td colspan="8" class="bg-danger">Total</td>
+            </tr>
+
+            <!-- Start Break -->
+            <tr>
+                <td colspan="42" class="tdCustom"></td>
+            </tr>
+            <!-- End Break -->
+
+            <!-- Start mot3hden -->
+            <tr>
+                <th colspan="44" class="trHeader">{{_langChange.SuppliersRatio}}</th>
+            </tr>
+
+            <tr class="head3" #head3>
+                <th colspan="6" class="text-danger">
+                    {{_langChange.total}}
+                </th>
+
+                <th colspan="6">
+                    {{_langChange.wedding}}
+                </th>
+                <th colspan="6">
+                    {{_langChange.KoshaAndCenterpiece}}
+                </th>
+                <th colspan="6">
+                    {{_langChange.LaserAndDJAndSmoking}}
+
+                </th>
+                <th colspan="6">
+                    {{_langChange.VideoAndPhoto}}
+                </th>
+                <th colspan="6">
+                    {{_langChange.hall}}
+                </th>
+                <th colspan="4">
+                    {{_langChange.invoice}}
+                </th>
+                <th colspan="4">
+                    {{_langChange.date}}
+                </th>
+            </tr>
+            <tr *ngFor="let sell of sells">
+                <td colspan="6">
+                    {{(allRecipe|parties:category:sell:tables:taxs).totalSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+                    {{(allRecipe|parties:category:sell:tables:taxs).weddingSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+                    {{(allRecipe|parties:category:sell:tables:taxs).weddingDesignerSupplier|number:'1.2-2'}}
+                </td>
+
+                <td colspan="6">
+                    {{(allRecipe|parties:category:sell:tables:taxs).laserDjSmokingSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+                    {{(allRecipe|parties:category:sell:tables:taxs).videoPhotosSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+
+                    <span
+                        *ngIf="sell.res_table_id != null && (tables|filterRecipe:sell.res_table_id) != undefined ;else tableName">
+                        {{(tables|filterRecipe:sell.res_table_id).name}}
+                    </span>
+
+                </td>
+                <td colspan="4">{{sell.invoice_no|replace}}</td>
+                <td colspan="4">{{sell.transaction_date|date:'dd/MM/yyyy'}}</td>
+            </tr>
+
+            <tr class="bg-danger" *ngIf="totalFoodSum[0]">
+                <td colspan="6">
+                    {{totalFoodSum[0].totalSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+                    {{totalFoodSum[0].weddingSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+                    {{totalFoodSum[0].weddingDesignerSupplier|number:'1.2-2'}}
+                </td>
+
+                <td colspan="6">
+                    {{totalFoodSum[0].laserDjSmokingSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="6">
+                    {{totalFoodSum[0].videoPhotosSupplier|number:'1.2-2'}}
+                </td>
+                <td colspan="15" class="bg-danger">Total</td>
+            </tr>
+            <!-- end mot3hden -->
+
+         
+        </tbody>
+    </table>
+    <ng-template #nodata>
+
+
+        <div class="d-flex h-100 justify-content-center align-items-center">
+            <h2>Sorry No Data Found</h2>
+        </div>
+    </ng-template>
+    
+</div>

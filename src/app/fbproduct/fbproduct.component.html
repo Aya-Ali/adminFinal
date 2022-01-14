@@ -1,0 +1,485 @@
+<!-- navbar  -->
+<nav class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+
+
+
+    <div
+        class="col-md-10 col-sm-9 col-9 d-flex align-items-center justify-content-md-end justify-content-between innerNav">
+        <div class="spinner-border text-danger" role="status" *ngIf="loading2">
+            <span class="sr-only">Loading...</span>
+        </div>
+        <i class="fas fa-server mx-2 text-danger" (click)="getAllDate()" title="getAllData"></i>
+        <i class="fas fa-cubes text-info mx-2" data-toggle="modal" data-target="#exampleModal"></i>
+        <div class="position-relative search mx-1">
+            <input type="text" [(ngModel)]="searchValueModel" [value]='searchValueModel'
+                class="form-control bg-dark rounded-pill text-white" placeholder="Search...."
+                (keyup.enter)="search(searchValueModel)">
+            <i class="fas fa-search position-absolute text-white" (click)="search(searchValueModel)"></i>
+        </div>
+
+        <div class="form-check mx-1 ">
+            <input class="form-check-input" (change)="sellFilter($event.target)" type="checkbox" id="gridCheck2"
+                [checked]="sellCheck">
+            <label class="form-check-label text-white" for="gridCheck2">
+                Sell filter
+            </label>
+        </div>
+        <div class="form-check mx-1 ">
+            <input class="form-check-input" (change)="RatioFilter($event.target)" type="checkbox" id="gridCheck1"
+                [checked]="rationCheck">
+            <label class="form-check-label text-white" for="gridCheck1">
+                Ratio filter
+            </label>
+        </div>
+
+        <div class="w-25" name="SubCategory"
+            *ngIf="selectedSubCategory && category !='*' && category != null && category.sub_categories.length>0">
+
+            <select class="form-control bg-dark text-white" (change)="subCategoryOptions($event.target.value)">
+                <option value="" [selected]='selectedAll'>All</option>
+                <option *ngFor="let subcategory of category.sub_categories" [value]="subcategory.id">
+                    <span *ngIf="lang =='en' || lang == null ; else variationNameAr">
+                        {{subcategory.name|slice:0:subcategory.name.indexOf("/")}}
+                    </span>
+                    <ng-template #variationNameAr>
+                        <span>
+                            {{subcategory.name|slice:subcategory.name.indexOf("/")+1}}
+                        </span>
+                    </ng-template>
+                </option>
+            </select>
+        </div>
+        <div class="mx-2 w-25">
+            <ng-select name="category" (change)="categoryOptions(value)" [(ngModel)]="value">
+                <ng-option value="*">All</ng-option>
+                <ng-option *ngFor="let category of allCategory" [value]="category|json">
+                    <span *ngIf="lang =='en' || lang == null ; else CategoryNameAr">
+                        {{category.name|slice:0:category.name.indexOf("/")}}
+                    </span>
+                    <ng-template #CategoryNameAr>
+                        <span>
+                            {{category.name|slice:category.name.indexOf("/")+1}}
+                        </span>
+                    </ng-template>
+                </ng-option>
+            </ng-select>
+            <!-- <select name="category" class="form-control bg-dark text-white"
+                (change)="categoryOptions($event.target.value)">
+                <option value="*" [selected]='selectedAll'>All</option>
+                <optgroup label="Category">
+                    <option *ngFor="let category of allCategory" [value]="category|json">
+                        <span *ngIf="lang =='en' || lang == null ; else CategoryNameAr">
+                            {{category.name|slice:0:category.name.indexOf("/")}}
+                        </span>
+                        <ng-template #CategoryNameAr>
+                            <span>
+                                {{category.name|slice:category.name.indexOf("/")+1}}
+                            </span>
+                        </ng-template>
+                    </option>
+                </optgroup>
+            </select> -->
+        </div>
+        <div class="mx-2" *ngIf="!(roleNumber == '6' || roleNumber == '9'||roleNumber == '15')">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="FilterLocation($event.target.value,true) "
+                [class.d-none]="!(location == ' ' || location =='*' )">
+                <option value="*" [selected]='selectedAll'>All</option>
+                <option value="R">Restaurants</option>
+                <option value="F">Food Control</option>
+                <option value="RF">R+F</option>
+                <option value="P">Banquet</option>
+                <option value="A">Activites</option>
+                <option value="S">Supermarket</option>
+                <option value="null">Other</option>
+            </select>
+        </div>
+        <div class="mx-2" *ngIf="roleNumber == '6'">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="FilterLocation($event.target.value,true) "
+                [class.d-none]="!(location == ' ' || location =='*' )">
+                <option value="R" selected='true'>Restaurants</option>
+                <option value="P">Banquet</option>
+
+            </select>
+        </div>
+        <div class="mx-2" *ngIf="roleNumber == '9'">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="FilterLocation($event.target.value,true) "
+                [class.d-none]="!(location == ' ' || location =='*' )">
+                <option value="R">Restaurants</option>
+                <option value="F" selected='true'>Food Control</option>
+                <option value="P">Banquet</option>
+            </select>
+        </div>
+        <div class="" *ngIf="location_id == ' '">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectOption($event.target.value)">
+                <option value="*" selected='true'>All</option>
+                <option *ngFor="let location of Locations" [value]="location.id">{{location.name}}</option>
+
+            </select>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center text-white" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '6' || roleNumber == '9' "
+                    [routerLink]="['/kitchen']">
+                    <span>kitchen</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '6' || roleNumber == '7'|| roleNumber == '8'|| roleNumber == '9'||roleNumber == '15'"
+                    [routerLink]="['/sells']">
+                    <span>sells</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8' "
+                    [routerLink]="['/finance']">
+                    <span>finance</span>
+                </div>
+                <div class="refresh dropdown-item"
+                    *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8'|| roleNumber == '9' "
+                    [routerLink]="['/parties']">
+                    <span> Banquet
+                    </span>
+                </div>
+
+                <div *ngIf="roleNumber == '1'|| roleNumber == '9'  || roleNumber == '15'" class=" refresh dropdown-item"
+                    [routerLink]="['/pos']">
+                    <span>pos</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'"
+                    class=" refresh dropdown-item" [routerLink]="['/gw1']" [attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'"
+                    class=" refresh dropdown-item" [routerLink]="['/gw2']" [attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'"
+                    class=" refresh dropdown-item" [routerLink]="['/gw3']" [attr.title]="_langChange.mw3">
+                    <span>gw3</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'"
+                    class=" refresh dropdown-item" [routerLink]="['/gw4']" [attr.title]="_langChange.mw4">
+                    <span>gw4</span>
+                </div>
+                <div *ngIf="roleNumber == '1' || roleNumber == '2' ||roleNumber == '15'|| roleNumber == '7'|| roleNumber == '8'"
+                    class=" refresh dropdown-item" [routerLink]="['/gw5']" [attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"
+                    *ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"
+                    [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item" (click)="logOut()">LogOut</a>
+            </div>
+
+        </div>
+
+    </div>
+</nav>
+<!-- end navbar -->
+
+<div class="container-fluid py-5" *ngIf="allRecipe">
+
+    <i class="fas fa-print float-right my-3  text-white p-2 bg-info rounded" (click)="printData('tableFb')"></i>
+    <i class="far fa-file-excel float-right m-3  text-white p-2 bg-info rounded"
+        (click)="exportThisWithParameter('tableFb','sheet')"></i>
+    <table id="tableFb" class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize my-2"
+        border="1" width="90%" style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+        <thead class="head1">
+            <th colspan="2">{{_langChange.ProductName}}</th>
+            <th colspan="2">SKU</th>
+            <th colspan="2">{{_langChange.Stock}}</th>
+            <th colspan="2">{{_langChange.Variation}}</th>
+            <th colspan="2">{{_langChange.ProductCost}}</th>
+            <th colspan="2">{{_langChange.StockValueByCostPrice}}</th>
+            <th colspan="2" *ngIf="sellCheck ">{{_langChange.ProductSelling}}</th>
+            <th colspan="2" *ngIf="sellCheck ">{{_langChange.StockValuebySellingPrice}}</th>
+            <th colspan="2" *ngIf="sellCheck ">{{_langChange.Ratio}}</th>
+            <th colspan="2" *ngIf="sellCheck ">{{_langChange.TotalProfit}}</th>
+        </thead>
+        <tbody *ngIf="allRecipe.length>0">
+            <tr *ngFor="let item of allRecipe">
+                <td colspan="2">
+                    <span *ngIf="item != undefined;else Exist3">
+                        <span *ngIf="lang =='en' || lang == null ; else recipeNameAr">
+                            {{item.product_custom_field1 }}
+                            <span *ngIf="item.product_custom_field1 == null || item.product_custom_field1 == ''">
+                                {{item.name}}
+                            </span>
+                        </span>
+                        <ng-template #recipeNameAr>
+                            <span>{{item.name }}</span>
+                        </ng-template>
+                    </span>
+                    <ng-template #Exist3>
+                        <span> Order not exists</span>
+                    </ng-template>
+                </td>
+
+                <td [attr.colspan]="(sellCheck)?18:10"
+                    *ngIf="item.product_variations[0].variations.length>1 ;else singleRow">
+
+                    <table class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize"
+                        border="1" width="90%" style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+                        <tr *ngFor="let variation of item.product_variations[0].variations">
+                            <td colspan="2">
+                                {{variation.sub_sku}}
+                            </td>
+                            <td colspan="2">
+                                <span *ngIf="item.enable_stock != 0;else NotStock">
+                                    {{(variation.variation_location_details|sum:'qty_available')|number:'1.2-2'}}
+                                </span>
+                                <ng-template #NotStock>
+                                    <span>
+                                        <i class="fas fa-times text-danger"></i>
+                                    </span>
+                                </ng-template>
+
+                            </td>
+                            <td colspan="2">
+                                <span *ngIf="lang =='en' || lang == null ; else variationNameAr">
+                                    {{variation.name|slice:0:variation.name.indexOf("/")}}
+                                </span>
+                                <ng-template #variationNameAr>
+                                    <span>
+                                        {{variation.name|slice:variation.name.indexOf("/")+1}}
+                                    </span>
+                                </ng-template>
+                            </td>
+                            <td colspan="2"> {{variation.dpp_inc_tax|number:'1.2-2'}}</td>
+                            <td colspan="2">
+                                {{((variation.dpp_inc_tax)*(variation.variation_location_details|sum:'qty_available'))|number:'1.2-2'}}
+                            </td>
+                            <td colspan="2" *ngIf="sellCheck ">{{variation.default_sell_price|number:'1.2-2'}}
+                            </td>
+                            <td colspan="2" *ngIf="sellCheck ">
+                                {{((variation.default_sell_price)*(variation.variation_location_details|sum:'qty_available'))|number:'1.2-2'}}
+                            </td>
+                            <td colspan="2" *ngIf="sellCheck ">
+                                {{(variation.dpp_inc_tax/variation.default_sell_price)*100|number:'1.2-2'}}%
+                            </td>
+                            <td colspan="2" *ngIf="sellCheck ">
+                                {{(variation.default_sell_price-variation.dpp_inc_tax)|number:'1.2-2'}}</td>
+                        </tr>
+                    </table>
+                </td>
+                <ng-template #singleRow>
+                    <td colspan="2">{{item.sku}}
+                    </td>
+                    <td colspan="2">
+                        <span *ngIf="item.enable_stock != 0;else NotStock">
+
+                            {{item.product_variations[0].variations[0].variation_location_details|sum:'qty_available'|number:'1.2-2'}}
+                        </span>
+                        <ng-template #NotStock>
+                            <span>
+                                <i class="fas fa-times text-danger"></i>
+                            </span>
+                        </ng-template>
+
+                    </td>
+                    <td colspan="2">
+                        <i class="fas fa-times text-danger"></i>
+                    </td>
+                    <td colspan="2"> {{item.product_variations[0].variations[0].dpp_inc_tax|number:'1.2-2'}}</td>
+
+                    <td colspan="2">
+                        {{(item.product_variations[0].variations[0].dpp_inc_tax*(item.product_variations[0].variations[0].variation_location_details|sum:'qty_available'))|number:'1.2-2'}}
+                    </td>
+
+                    <td colspan="2" *ngIf="sellCheck ">
+                        {{item.product_variations[0].variations[0].default_sell_price|number:'1.2-2'}}</td>
+
+                    <td colspan="2" *ngIf="sellCheck ">
+                        {{(item.product_variations[0].variations[0].default_sell_price*(item.product_variations[0].variations[0].variation_location_details|sum:'qty_available'))|number:'1.2-2'}}
+                    </td>
+
+                    <td colspan="2" *ngIf="sellCheck ">
+                        {{(item.product_variations[0].variations[0].dpp_inc_tax/item.product_variations[0].variations[0].default_sell_price)*100|number:'1.2-2'}}%
+                    </td>
+
+                    <td colspan="2" *ngIf="sellCheck ">
+                        {{(item.product_variations[0].variations[0].default_sell_price-item.product_variations[0].variations[0].dpp_inc_tax)|number:'1.2-2'}}
+                    </td>
+                </ng-template>
+            </tr>
+            <tr class="bg-danger">
+
+                <td colspan="4">
+                    {{_langChange.total}}
+                </td>
+                <td colspan="2">{{TotalSum.totalStock|number:'1.2-2'}}</td>
+                <td colspan="2"></td>
+                <td colspan="2">
+                    <!-- {{TotalSum.totalProductSum|number:'1.2-2'}} -->
+
+                </td>
+                <td colspan="2">{{TotalSum.totalCostProduct|number:'1.2-2'}}</td>
+
+                <td colspan="2" *ngIf="sellCheck ">
+                    <!-- {{TotalSum.totalSellSum|number:'1.2-2'}} -->
+                </td>
+                <td colspan="2" *ngIf="sellCheck ">{{TotalSum.totalCostSell|number:'1.2-2'}}</td>
+
+                <td colspan="2" *ngIf="sellCheck "></td>
+                <td colspan="2" *ngIf="sellCheck ">{{TotalSum.totalProfitSum|number:'1.2-2'}}</td>
+
+            </tr>
+
+
+        </tbody>
+    </table>
+</div>
+
+
+
+
+<!-- Modal -->
+<div class="modal fade text-white" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">{{_langChange.reportFb}} {{_langChange.Stock}}</h5>
+
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" id="inlineCheckbox1" value="Category"
+                        (change)="CategoryCheck($event.target)" [checked]="CategoryCheckValue">
+                    <label class="form-check-label" for="inlineCheckbox1">Category</label>
+                </div>
+                <button type="button" class="close mx-0" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body p-0">
+                <i class="fas fa-print float-right my-2  text-white p-2 bg-info rounded"
+                    (click)="printData('tableStock2')"></i>
+                <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+                    (click)="exportThisWithParameter('tableStock2','sheet')"></i>
+                <table class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize mb-0"
+                    id="tableStock2" border="1" width="90%"
+                    style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+                    <thead class="model">
+                        <th colspan="2">{{_langChange.category}}</th>
+                        <th colspan="2"> {{_langChange.Stock}}</th>
+                        <th colspan="2">{{_langChange.StockValueByCostPrice}}</th>
+                        <th colspan="2" *ngIf="sellCheck">{{_langChange.StockValuebySellingPrice}}</th>
+                    </thead>
+                    <tbody>
+
+                        <ng-container *ngFor="let item of StockValue">
+                            <tr [attr.colspan]="(sellCheck)?8:6" *ngIf="CategoryCheckValue">
+                                <td [attr.colspan]="(sellCheck)?8:6">
+
+                                    <table
+                                        class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize mb-0"
+                                        id="tablestock" border="1" width="90%"
+                                        style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+                                        <tr [attr.colspan]="(sellCheck)?8:6" *ngIf="CategoryCheckValue">
+                                            <td colspan="2">
+                                                <span *ngIf="lang =='en' || lang == null ; else categoryAr">
+                                                    {{item.name|slice:0:item.name.indexOf("/")}}
+                                                </span>
+                                                <ng-template #categoryAr>
+                                                    <span>
+                                                        {{item.name|slice:item.name.indexOf("/")+1}}
+
+                                                    </span>
+                                                </ng-template>
+                                                <!-- <i class="far fa-eye text-info" (click)="ToggleSub($event)"
+                                                    *ngIf="item.subCategory.length>0"></i> -->
+
+                                            </td>
+                                            <td colspan="2">{{item.stock|number:'1.2-2'}}</td>
+                                            <td colspan="2">{{item.costPrice|number:'1.2-2'}}</td>
+                                            <td colspan="2" *ngIf="sellCheck">
+                                                {{item.sellingPrice|number:'1.2-2'}}</td>
+                                        </tr>
+                                    </table>
+                                </td>
+                            </tr>
+
+                            <tr [attr.colspan]="(sellCheck)?8:6" *ngIf="item.subCategory.length>0&&!CategoryCheckValue">
+                                <td [attr.colspan]="(sellCheck)?8:6">
+                                    <table
+                                        class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize mb-0"
+                                        id="tablestock" border="1" width="90%"
+                                        style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+                                        <tr [attr.colspan]="(sellCheck)?8:6"
+                                            *ngIf="item.subCategory.length>0&&!CategoryCheckValue">
+
+                                            <td [attr.colspan]="(sellCheck)?8:6">
+                                                <table
+                                                    class="table w-100 table-striped shadow table-dark table-bordered  text-capitalize mb-0"
+                                                    border="1" width="90%"
+                                                    style="text-align:center;border-collapse: collapse;table-layout: fixed;">
+                                                    <tr *ngFor="let item2 of item.subCategory">
+                                                        <td>
+                                                            <span *ngIf="lang =='en' || lang == null ; else categoryAr">
+                                                                {{item2.name|slice:0:item2.name.indexOf("/")}}
+                                                            </span>
+                                                            <ng-template #categoryAr>
+                                                                <span>
+                                                                    {{item2.name|slice:item2.name.indexOf("/")+1}}
+
+                                                                </span>
+                                                            </ng-template>
+
+                                                        </td>
+                                                        <td>{{item2.stock|number:'1.2-2'}}</td>
+                                                        <td>{{item2.costPrice|number:'1.2-2'}}</td>
+                                                        <td *ngIf="sellCheck">
+                                                            {{item2.sellingPrice|number:'1.2-2'}}</td>
+                                                    </tr>
+                                                </table>
+                                            </td>
+
+                                        </tr>
+                                    </table>
+                                </td>
+
+                            </tr>
+                        </ng-container>
+
+
+                        <tr [attr.colspan]="(sellCheck)?8:6" class="bg-danger">
+                            <td colspan="2">Total</td>
+                            <td colspan="2">{{totalStock|number:'1.2-2'}}</td>
+                            <td colspan="2">{{totalStockCostPrice|number:'1.2-2'}}</td>
+                            <td colspan="2" *ngIf="sellCheck">{{totalStockSellingPrice|number:'1.2-2'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="position-fixed bottom-0 right-0 p-3 w-50" style="z-index: 5; right: 0; bottom: 0;">
+    <div id="liveToast" class="toast hide ml-auto" role="alert" aria-live="assertive" data-autohide="false">
+        <div class="toast-header text-white  bg-danger">
+            <i class="fas fa-exclamation-triangle mx-2 "></i>
+            <strong class="mr-auto">Data</strong>
+            <button type="button" class="ml-2 mb-1 close" data-dismiss="toast" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="toast-body">
+            You Get All Data
+        </div>
+    </div>
+</div>

@@ -1,0 +1,37 @@
+.tdCustom {
+  background-color: #121117 !important;
+  border-color: #121117 !important;
+}
+
+.trHeader {
+  background-color: #343a40 !important;
+  cursor: pointer;
+}
+
+.nav-btn, .dropdown-item:focus, .dropdown-item:hover {
+  background-color: #7c7f8d;
+  color: #fff;
+}
+
+table * {
+  vertical-align: middle;
+}
+.table-dark {
+  background-color: #212529 !important;
+}
+.table .head1,.table .head2,.table .head3
+{
+  position: sticky;
+  top:60px;
+  background-color:#100f15 ;
+  z-index: 88;
+}
+.table .head3{
+position: static;
+}
+.table .head2{
+  top: 137px;
+}
+.head1 th,.head2 td{
+  outline: 1px solid #343a40;
+}

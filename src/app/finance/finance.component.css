@@ -1,0 +1,11 @@
+
+.nav-btn,
+.dropdown-item:focus,
+.dropdown-item:hover {
+  background-color: #7c7f8d;
+  color: #fff;
+}
+.tdCustom{
+  background-color: #121117!important;
+  border-color: #121117!important;
+}

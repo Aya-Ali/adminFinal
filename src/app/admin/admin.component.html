@@ -1,0 +1,45 @@
+<div class="container vh-100 d-flex justify-content-center align-items-center">
+    <div class="col-md-6 col-sm-4 col-4 ">
+        <img src="assets/logo.png" class="w-75">
+    </div>
+    <div class="col-md-6 col-sm-8 col-8  shadow-lg p-5 rounded-lg custom_bg">
+        <form [formGroup]="userForm" (ngSubmit)="userData()">
+            <div class="form-group">
+                <div class="col-auto">
+                    <label class="sr-only" for="userName">Username</label>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text">@</div>
+                        </div>
+                        <input type="text" name="" id="userName" class="form-control" placeholder="User Name"
+                            formControlName="username" aria-describedby="helpId">
+                    </div>
+                </div>
+
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <label class="sr-only" for="userpass">Username</label>
+                    <div class="input-group mb-2">
+                        <div class="input-group-prepend">
+                            <div class="input-group-text"><i class="fas fa-lock"></i></div>
+                        </div>
+                        <input type="password" name="" id="userpass" class="form-control" placeholder="User Password"
+                            formControlName="password" aria-describedby="helpId">
+                    </div>
+                </div>
+
+
+            </div>
+            <div class="alert alert-danger" *ngIf="noUser" role="alert">
+                <strong>Enter Valid Data</strong>
+            </div>
+            <div class="form-group">
+                <div class="col-auto">
+                    <button class="btn btn-info" type="submit" [disabled]="!userForm.valid">Login</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div>

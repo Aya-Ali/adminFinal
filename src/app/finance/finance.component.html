@@ -1,0 +1,1029 @@
+<!-- navbar  -->
+<nav class="row fixed-top shadow p-2 align-items-center justify-content-end">
+    <app-lang></app-lang>
+    <div class="spinner-border text-danger" role="status" *ngIf="loading2">
+        <span class="sr-only">Loading...</span>
+    </div>
+    <div class="col-md-8 col-sm-7 col-7 d-flex align-items-center justify-content-md-end justify-content-between">
+        <div class="" *ngIf="location_id == ' '">
+            <select name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectOption($event.target.value)">
+                <option value="*" selected='true'>All</option>
+                <option *ngFor="let location of Locations" [value]="location.id">{{location.name}}</option>
+
+            </select>
+        </div>
+        <div class="mx-2">
+
+            <!-- <input type="date" [value]="today" name="restaurant" class="form-control bg-dark text-white"
+                (change)="selectTime($event.target.value)"> -->
+            <input type="text" ngxDaterangepickerMd [(ngModel)]="selected" [showCustomRangeLabel]="true"
+                [alwaysShowCalendars]="alwaysShowCalendars" [ranges]="ranges" [locale]="{applyLabel: 'apply'}"
+                (change)="selectTime(selected)" [keepCalendarOpeningWithRange]="keepCalendarOpeningWithRange"
+                [showRangeLabelOnInput]="showRangeLabelOnInput" class="form-control" placeholder="Select please...">
+
+        </div>
+
+        <div class="p-1 bg-danger mx-2 text-white rounded refresh "(click)="refreshSell($event)">
+            <i class="fas fa-sync rotateB" id="refreshBtn"></i>
+        </div>
+        <div class="dropdown ">
+            <button class="btn btn-sm mx-1 text-capitalize btn-danger dropdown-toggle" type="button"
+                id="dropdownMenuButton" *ngIf="userData" data-toggle="dropdown" aria-haspopup="true"
+                aria-expanded="false">
+                {{userData.name}}
+            </button>
+            <div class="dropdown-menu nav-btn text-center" aria-labelledby="dropdownMenuButton">
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' " [routerLink]="['/kitchen']">
+                    <span >kitchen</span>
+                </div>
+           
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7' || roleNumber == '8'"  [routerLink]="['/product']">
+                    <span>Products</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7' || roleNumber == '8' " [routerLink]="['/sells']">
+                    <span >sells</span>
+                </div>
+                <div class="refresh dropdown-item" *ngIf="roleNumber == '1' || roleNumber == '2' || roleNumber == '7'|| roleNumber == '8' " [routerLink]="['/parties']">
+                    <span >
+                        Banquet
+                    </span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'"  [routerLink]="['/pos']">
+                    <span>pos</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw1']"[attr.title]="_langChange.mw1">
+                    <span>gw1</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw2']"[attr.title]="_langChange.mw2">
+                    <span>gw2</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw3']"[attr.title]="_langChange.mw3">
+                    <span>gw3</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw4']"[attr.title]="_langChange.mw4">
+                    <span>gw4</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/gw5']" [attr.title]="_langChange.mw5">
+                    <span>gw5</span>
+                </div>
+                <div class=" refresh dropdown-item"*ngIf="roleNumber == '1'|| roleNumber == '2'|| roleNumber == '7'|| roleNumber == '8'"  [routerLink]="['/officer']">
+                    <span>officer</span>
+                </div>
+                <a class="dropdown-item text-white" (click)="logOut()">LogOut</a>
+            </div>
+        </div>
+
+      
+    </div>
+</nav>
+<!-- end navbar -->
+
+<div class="container-fluid text-white py-5">
+    <i class="fas fa-print float-right my-2  text-white p-2 bg-info rounded" (click)="printData()"></i>
+    <i class="far fa-file-excel float-right m-2  text-white p-2 bg-info rounded"
+        (click)="exportThisWithParameter('tableFinance','sheet')"></i>
+    <div id="tableFinance">
+        <table class="table w-100 table-striped shadow table-dark table-bordered text-center text-capitalize my-2"
+            border="1" width="90%" style="text-align:center;border-collapse: collapse;">
+            <thead>
+                <tr>
+                    <th colspan="19">{{_langChange.report}}</th>
+                </tr>
+
+            </thead>
+            <tbody *ngIf="allRecipe?.length>0 ">
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupA,'a')">{{_langChange.groupA}}</th>
+                </tr>
+                <tr>
+                    <th colspan="1">
+                        {{_langChange.hotelRoom}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.due}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.visa}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.cash}}
+                    </th>
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="1">{{roomGroupA|number:'1.2-2'}}</td>
+                    <td>{{dueGroupA|number:'1.2-2'}}</td>
+                    <td>{{visaGroupA|number:'1.2-2'}}</td>
+                    <td>{{cashGroupA|number:'1.2-2'}}</td>
+                    <td>{{(groupA|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupA|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupA|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupA|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupA).food|number:'1.2-2'}}</td>
+                </tr>
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- Start Group B -->
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupB,'b')">{{_langChange.groupB}}</th>
+                </tr>
+
+                <tr>
+                    <th rowspan="1" colspan="2"> {{_langChange.due}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.visa}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.cash}}</th>
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{dueGroupB|number:'1.2-2'}}</td>
+                    <td colspan="1">{{visaGroupB|number:'1.2-2'}}</td>
+                    <td colspan="1">{{cashGroupB|number:'1.2-2'}}</td>
+                    <td colspan="1">{{(groupB|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupB|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupB|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupB|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupB).food|number:'1.2-2'}}</td>
+                </tr>
+                <!-- end Group B -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- start Group C -->
+
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupC,'c')">{{_langChange.groupC}}</th>
+                </tr>
+                <tr>
+
+                    <th rowspan="1" colspan="2"> {{_langChange.due}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.visa}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.cash}}</th>
+
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{dueGroupC|number:'1.2-2'}}</td>
+                    <td colspan="1">{{visaGroupC|number:'1.2-2'}}</td>
+                    <td colspan="1">{{cashGroupC|number:'1.2-2'}}</td>
+                    <td colspan="1">{{(groupC|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupC|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupC|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupC|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupC).food|number:'1.2-2'}}</td>
+                </tr>
+                <!-- end Group C -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- start Group D -->
+
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupD,'d')">{{_langChange.groupD}}</th>
+                </tr>
+                <tr>
+                    <th colspan="1">
+                        {{_langChange.Hospitality}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.generalHospitality}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.partiesHospitality}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hotelHospitality}}
+                    </th>
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td>{{hospitalityGroupD|number:'1.2-2'}}</td>
+                    <td>{{generalHospitalityGroupD|number:'1.2-2'}}</td>
+                    <td>{{partiesHospitalityGroupD|number:'1.2-2'}}</td>
+                    <td>{{hotelHospitalityGroupD|number:'1.2-2'}}</td>
+                    <td>{{(groupD|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupD|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupD|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupD|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupD).food|number:'1.2-2'}}</td>
+                </tr>
+                <!-- end Group D -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- start Group E -->
+
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupE,'e')">{{_langChange.groupE}}</th>
+                </tr>
+                <tr>
+                    <th colspan="4">
+                        {{_langChange.hotelBreakfast}}
+                    </th>
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="4">{{(groupE|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupE|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupE|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupE|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupE|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupE).food|number:'1.2-2'}}</td>
+                </tr>
+                <!-- end Group E -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- start Group F -->
+
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupF,'f')">{{_langChange.groupF}}</th>
+                </tr>
+                <tr>
+
+                    <th rowspan="1" colspan="2"> {{_langChange.due}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.visa}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.cash}}</th>
+
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{dueGroupF|number:'1.2-2'}}</td>
+                    <td colspan="1">{{visaGroupF|number:'1.2-2'}}</td>
+                    <td colspan="1">{{cashGroupF|number:'1.2-2'}}</td>
+                    <td colspan="1">{{(groupF|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupF|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupF|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupF|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupF).food|number:'1.2-2'}}</td>
+                </tr>
+                <!-- end Group F -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- start Group G -->
+
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupG,'g')">{{_langChange.groupG}}</th>
+                </tr>
+                <tr>
+
+                    <th rowspan="1" colspan="2"> {{_langChange.due}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.visa}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.cash}}</th>
+
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{dueGroupG|number:'1.2-2'}}</td>
+                    <td colspan="1">{{visaGroupG|number:'1.2-2'}}</td>
+                    <td colspan="1">{{cashGroupG|number:'1.2-2'}}</td>
+                    <td colspan="1">{{(groupG|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td>{{(groupG|totalamount).service15Group|number:'1.2-2'}}</td>
+                    <td>{{(groupG|totalamount).service10Group|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).animals|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).Hairdresser|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).Laundry|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).Security|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).Activities|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).Market|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).other|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).shisha|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).broken|number:'1.2-2'}}</td>
+                    <td>{{(groupG|totalamount).discountGroup|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).beverage|number:'1.2-2'}}</td>
+                    <td>{{(allRecipe|rightpart:category:groupG).food|number:'1.2-2'}}</td>
+                </tr>
+                <!-- end Group G -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+
+                <!-- start Group H -->
+
+                <tr>
+                    <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                        (click)="invoiceDetails(groupH,'h')">{{_langChange.groupH}}</th>
+                </tr>
+                <tr>
+
+                    <th rowspan="1" colspan="2"> {{_langChange.outCome}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.dueCome}}</th>
+                    <th rowspan="1" colspan="1"> {{_langChange.paidCome}}</th>
+
+                    <th colspan="1" class="text-danger">
+                        {{_langChange.total}}
+                    </th>
+                    <th colspan="14">
+              
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="2">{{outComeGroupH|number:'1.2-2'}}</td>
+                    <td colspan="1">{{dueGroupH|number:'1.2-2'}}</td>
+                    <td colspan="1">{{paidGroupH|number:'1.2-2'}}</td>
+                    <td colspan="1">{{(groupH|totalamount).totalGroup|number:'1.2-2'}}</td>
+                    <td colspan="14">
+              
+                    </td>
+                </tr>
+                <!-- end Group H -->
+
+                <!-- Start Break -->
+                <tr>
+                    <td colspan="19" class="tdCustom"></td>
+                </tr>
+                <!-- End Break -->
+                      <!-- start Group I -->
+
+                      <tr>
+                        <th colspan="19" class="trHeader" data-toggle="modal" data-target="#staticBackdrop"
+                            (click)="invoiceDetails(groupI,'i')">{{_langChange.groupI}}</th>
+                    </tr>
+                    <tr>
+    
+                        <th rowspan="1" colspan="2"> {{_langChange.outCome}}</th>
+                        <th rowspan="1" colspan="1"> {{_langChange.dueCome}}</th>
+                        <th rowspan="1" colspan="1"> {{_langChange.paidCome}}</th>
+    
+                        <th colspan="1" class="text-danger">
+                            {{_langChange.total}}
+                        </th>
+                        <th colspan="14">
+                  
+                        </th>
+                    </tr>
+                    <tr>
+                        <td colspan="2">{{outComeGroupI|number:'1.2-2'}}</td>
+                        <td colspan="1">{{dueGroupI|number:'1.2-2'}}</td>
+                        <td colspan="1">{{paidGroupI|number:'1.2-2'}}</td>
+                        <td colspan="1">{{(groupI|totalamount).totalGroup|number:'1.2-2'}}</td>
+                        <td colspan="14">
+                  
+                        </td>
+                    </tr>
+                    <!-- end Group I -->
+    
+                    <!-- Start Break -->
+                    <tr>
+                        <td colspan="19" class="tdCustom"></td>
+                    </tr>
+                    <!-- End Break -->
+
+
+
+                <!-- start Group Total -->
+
+                <tr>
+                    <th colspan="19" class=" bg-danger"> {{_langChange.total}} </th>
+                </tr>
+                <tr>
+                    <th colspan="5" class="text-danger">
+                        {{_langChange.incomeTotal}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 15%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.service}} 10%
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.animals}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.hairdresser}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.laundry}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Security}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.Activities}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.market}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.other}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.shisha}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.broken}}
+                    </th>
+                    <th colspan="1" class="text-warning">
+                        {{_langChange.discount}} (-)
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.beverage}}
+                    </th>
+                    <th colspan="1">
+                        {{_langChange.food}}
+                    </th>
+                </tr>
+                <tr>
+                    <!-- start Calculate Total Amount -->
+                    <td colspan="5">
+                        {{
+                        [
+                        ((groupA|totalamount).totalGroup)
+                        ,((groupB|totalamount).totalGroup)
+                        ,((groupC|totalamount).totalGroup)
+                        ,((groupD|totalamount).totalGroup)
+                        ,((groupE|totalamount).totalGroup)
+                        ,((groupF|totalamount).totalGroup)
+                        ,((groupG|totalamount).totalGroup)
+                        ,((groupH|totalamount).totalGroup)
+                        ,((groupI|totalamount).totalGroup)]|sum|number:'1.2-2'}}
+                    </td>
+                    <!-- End Calculate Total Amount -->
+                    <!-- start Calculate Total Service15% -->
+                    <td>{{[((groupA|totalamount).service15Group),((groupB|totalamount).service15Group),((groupC|totalamount).service15Group),((groupD|totalamount).service15Group),((groupE|totalamount).service15Group),((groupF|totalamount).service15Group),((groupG|totalamount).service15Group)]|sum|number:'1.2-2'}}
+                    </td>
+                    <!-- end Calculate Total Service15% -->
+
+                    <!-- start Calculate Total Service10% -->
+                    <td>{{[((groupA|totalamount).service10Group),((groupB|totalamount).service10Group),((groupC|totalamount).service10Group),((groupD|totalamount).service10Group),((groupE|totalamount).service10Group),((groupF|totalamount).service10Group),((groupG|totalamount).service10Group)]|sum|number:'1.2-2'}}
+                    </td>
+                    <!-- end Calculate Total Service10% -->
+
+                    <!-- start Calculate Total Animals -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).animals) ,
+                        ((allRecipe|rightpart:category:groupB).animals) ,
+                        ((allRecipe|rightpart:category:groupC).animals),
+                        ((allRecipe|rightpart:category:groupD).animals) ,
+                        ((allRecipe|rightpart:category:groupE).animals) ,
+                        ((allRecipe|rightpart:category:groupF).animals),
+                        ((allRecipe|rightpart:category:groupG).animals)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total Animals -->
+
+                    <!-- start Calculate Total Hairdresser -->
+                    <td>
+                        {{[((allRecipe|rightpart:category:groupA).Hairdresser),
+                        ((allRecipe|rightpart:category:groupB).Hairdresser) ,
+                        ((allRecipe|rightpart:category:groupC).Hairdresser),
+                        ((allRecipe|rightpart:category:groupD).Hairdresser) ,
+                        ((allRecipe|rightpart:category:groupE).Hairdresser) ,
+                        ((allRecipe|rightpart:category:groupF).Hairdresser),
+                        ((allRecipe|rightpart:category:groupG).Hairdresser)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total Hairdresser -->
+                    <!-- start Calculate Total Laundry -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).Laundry) ,
+                        ((allRecipe|rightpart:category:groupB).Laundry) ,
+                        ((allRecipe|rightpart:category:groupC).Laundry), ((allRecipe|rightpart:category:groupD).Laundry)
+                        ,
+                        ((allRecipe|rightpart:category:groupE).Laundry) ,
+                        ((allRecipe|rightpart:category:groupF).Laundry),
+                        ((allRecipe|rightpart:category:groupG).Laundry)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total Laundry -->
+                    <!-- start Calculate Total Security -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).Security) ,
+                        ((allRecipe|rightpart:category:groupB).Security)
+                        ,
+                        ((allRecipe|rightpart:category:groupC).Security),
+                        ((allRecipe|rightpart:category:groupD).Security) ,
+                        ((allRecipe|rightpart:category:groupE).Security) ,
+                        ((allRecipe|rightpart:category:groupF).Security),
+                        ((allRecipe|rightpart:category:groupG).Security)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total Security -->
+                    <!-- start Calculate Total Activities -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).Activities) ,
+                        ((allRecipe|rightpart:category:groupB).Activities) ,
+                        ((allRecipe|rightpart:category:groupC).Activities),
+                        ((allRecipe|rightpart:category:groupD).Activities) ,
+                        ((allRecipe|rightpart:category:groupE).Activities) ,
+                        ((allRecipe|rightpart:category:groupF).Activities),
+                        ((allRecipe|rightpart:category:groupG).Activities)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total Activities -->
+                    <!-- start Calculate Total Market -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).Market) , ((allRecipe|rightpart:category:groupB).Market)
+                        ,
+                        ((allRecipe|rightpart:category:groupC).Market), ((allRecipe|rightpart:category:groupD).Market) ,
+                        ((allRecipe|rightpart:category:groupE).Market) ,
+                        ((allRecipe|rightpart:category:groupF).Market),
+                        ((allRecipe|rightpart:category:groupG).Market)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total Market -->
+                    <!-- start Calculate Total other -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).other) , ((allRecipe|rightpart:category:groupB).other) ,
+                        ((allRecipe|rightpart:category:groupC).other), ((allRecipe|rightpart:category:groupD).other) ,
+                        ((allRecipe|rightpart:category:groupE).other) ,
+                        ((allRecipe|rightpart:category:groupF).other),
+                        ((allRecipe|rightpart:category:groupG).other)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total other -->
+                    <!-- start Calculate Total shisha -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).shisha) , ((allRecipe|rightpart:category:groupB).shisha)
+                        ,
+                        ((allRecipe|rightpart:category:groupC).shisha), ((allRecipe|rightpart:category:groupD).shisha) ,
+                        ((allRecipe|rightpart:category:groupE).shisha) ,
+                        ((allRecipe|rightpart:category:groupF).shisha),
+                        ((allRecipe|rightpart:category:groupG).shisha)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total shisha -->
+                    <!-- start Calculate Total broken -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).broken) , ((allRecipe|rightpart:category:groupB).broken)
+                        ,
+                        ((allRecipe|rightpart:category:groupC).broken), ((allRecipe|rightpart:category:groupD).broken) ,
+                        ((allRecipe|rightpart:category:groupE).broken) ,
+                        ((allRecipe|rightpart:category:groupF).broken),
+                        ((allRecipe|rightpart:category:groupG).broken)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total broken -->
+                    <!-- start Calculate Total discount -->
+                    <td>
+                        {{[((groupA|totalamount).discountGroup),((groupB|totalamount).discountGroup),((groupC|totalamount).discountGroup),((groupD|totalamount).discountGroup),((groupE|totalamount).discountGroup),((groupF|totalamount).discountGroup),((groupG|totalamount).discountGroup)]|sum|number:'1.2-2'}}
+                    </td>
+                    <!-- end Calculate Total discount -->
+                    <!-- start Calculate Total bevarage -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).beverage) ,
+                        ((allRecipe|rightpart:category:groupB).beverage)
+                        ,
+                        ((allRecipe|rightpart:category:groupC).beverage),
+                        ((allRecipe|rightpart:category:groupD).beverage) ,
+                        ((allRecipe|rightpart:category:groupE).beverage) ,
+                        ((allRecipe|rightpart:category:groupF).beverage) ,
+                        ((allRecipe|rightpart:category:groupG).beverage)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total bevarage -->
+                    <!-- start Calculate Total food -->
+                    <td>{{
+                        [((allRecipe|rightpart:category:groupA).food) , ((allRecipe|rightpart:category:groupB).food) ,
+                        ((allRecipe|rightpart:category:groupC).food), ((allRecipe|rightpart:category:groupD).food) ,
+                        ((allRecipe|rightpart:category:groupE).food) ,
+                        ((allRecipe|rightpart:category:groupF).food),
+                        ((allRecipe|rightpart:category:groupG).food)]|sum|number:'1.2-2'}}</td>
+                    <!-- end Calculate Total food -->
+                </tr>
+                <!-- end Group Total -->
+
+
+
+
+
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+
+
+<!-- Modal -->
+<div class="modal fade" id="staticBackdrop" data-backdrop="static" data-keyboard="false" tabindex="-1"
+    aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Invoice Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <table class="table table-striped table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Invoices</th>
+                            <th>Service</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let invoice of invoiceDetail;let i = index">
+                            <td>{{i}}</td>
+                            <td>{{invoice.invoice_no}}</td>
+                            <td>
+                                <span *ngIf="invoice.tax_id=='2'">
+                                    25%
+                                </span>
+                                <span *ngIf="invoice.tax_id=='1'">
+                                    15%
+                                </span>
+                                <span *ngIf="invoice.tax_id==null">
+                                    -
+                                </span>
+
+
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+<div class="lang col-md-3 col-sm-3  py-2 px-4 col-3 offset-md-1 offset-sm-2 offset-2" id="lang" [class]="(lang == 'ar') ? 'en':'ar'">
+    <input id="chck" type="button" [lang]="lang" (click)="changeLanguage($event.target.lang)">
+    <label for="chck" class="check-trail " [ngClass]="(lang == 'ar') ? 'en':'ar'" id="checkTrail">
+      <span class="check-handler"></span>
+    </label>
+</div> 

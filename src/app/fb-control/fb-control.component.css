@@ -1,0 +1,23 @@
+.innerNav{
+    position: relative;
+    z-index: 999999;
+}
+
+.table thead,.table .model{
+    position: sticky;
+    top: 58px;
+    left: 0;
+    background-color: black;
+    z-index: 88;
+}
+.table .model{
+    top:0;
+    z-index: 888;
+}
+.modal-content{
+    background-color: #343a40;
+    color: #fff;
+}
+.modal-dialog{
+    max-width: 90%;
+}

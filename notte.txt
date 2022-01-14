@@ -1,0 +1,6 @@
+production command
+- ng build --prod
+run command
+- ng serve --open
+install node module
+- npm install

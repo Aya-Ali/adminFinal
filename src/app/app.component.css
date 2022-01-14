@@ -1,0 +1,8 @@
+.load{
+    opacity: 1 !important;
+    transition: all 2s ease-in-out;
+}
+
+.copyRight {
+    direction: ltr;
+}
